@@ -1,18 +1,17 @@
 package org.dscnitrourkela.elaichi.ui.activities
 
 import androidx.annotation.NonNull
+import androidx.lifecycle.asLiveData
 import dagger.hilt.android.AndroidEntryPoint
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flow
 import okhttp3.Credentials
 import org.dscnitrourkela.elaichi.R
-import org.dscnitrourkela.elaichi.api.data.Mail
+import org.dscnitrourkela.elaichi.others.debugLog
 import org.dscnitrourkela.elaichi.repository.MailRepository
 import javax.inject.Inject
 
@@ -27,40 +26,36 @@ class MainActivity : FlutterFragmentActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
             .setMethodCallHandler { call, result ->
                 if (call.method.equals("startOwlMail", ignoreCase = true)) {
-                    ensureLogin()
+                    login()
                 }
                 if (call.method.equals("getMails", ignoreCase = true)) {
-                    result.success(getMailsList().size)
+                    val list = getMails()
+                    debugLog(list)
+                    result.success(list?.size)
+                }
+                if (call.method.equals("getParsedMails", ignoreCase = true)) {
+                    result.success(getParsedMails(0))
+                    //pass the conversation id to this
                 }
             }
     }
 
-    fun getMailsList():List<Mail>{
-        var list:List<Mail> = emptyList()
-        CoroutineScope(Dispatchers.IO).launch {
-            list = getMails()
-            print("getting list inside coroutine done")
-
-        }
-        return list
-    }
-
-    fun ensureLogin():Unit{
-        CoroutineScope(Dispatchers.IO).launch {
-            login()
-            print("login inside coroutine done")
-
-        }
-    }
-    suspend fun getMails()=
-        mailRepository.getMails(getString(R.string.inbox),0).first()
+    fun getMails() =
+        flow {
+            emit(mailRepository.getMails(getString(R.string.inbox), 0).first())
+        }.asLiveData().value
 
     //TODO Change the hardcoded email password
-    suspend fun login() {
-        mailRepository.setCredential(Credentials.basic("Roll no","Password."))
-        mailRepository.login()
-        print("Ho gaya login, aage badho")
+    fun login(roll: String = "Roll no", password: String = "Password.") {
+        mailRepository.setCredential(Credentials.basic(roll, password))
+        flow { emit(mailRepository.login()) }
+        debugLog("Ho gaya login, aage badho")
     }
+
+    fun getParsedMails(conversationId: Int) =
+        flow {
+            emit(mailRepository.getParsedMails(conversationId).first())
+        }.asLiveData().value
 
     companion object {
         private const val CHANNEL = "org.dscnitrourkela.elaichi"
