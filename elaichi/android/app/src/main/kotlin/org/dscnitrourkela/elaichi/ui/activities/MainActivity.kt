@@ -1,25 +1,30 @@
 package org.dscnitrourkela.elaichi.ui.activities
 
+import android.os.Bundle
+import android.os.PersistableBundle
+import androidx.activity.viewModels
 import androidx.annotation.NonNull
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import okhttp3.Credentials
+import kotlinx.coroutines.launch
 import org.dscnitrourkela.elaichi.R
+import org.dscnitrourkela.elaichi.others.Status
 import org.dscnitrourkela.elaichi.others.debugLog
-import org.dscnitrourkela.elaichi.repository.MailRepository
-import javax.inject.Inject
+import org.dscnitrourkela.elaichi.ui.viewmodels.MainViewModel
 
 @AndroidEntryPoint
 class MainActivity : FlutterFragmentActivity() {
 
-    @Inject
-    lateinit var mailRepository: MailRepository
+    private val viewModel: MainViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onCreate(savedInstanceState, persistentState)
+        subscribeToObservers()
+    }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
@@ -35,27 +40,43 @@ class MainActivity : FlutterFragmentActivity() {
                 }
                 if (call.method.equals("getParsedMails", ignoreCase = true)) {
                     result.success(getParsedMails(0))
-                    //pass the conversation id to this
+                    //TODO pass the conversation id to this
                 }
             }
     }
 
-    fun getMails() =
-        flow {
-            emit(mailRepository.getMails(getString(R.string.inbox), 0).first())
-        }.asLiveData().value
-
     //TODO Change the hardcoded email password
-    fun login(roll: String = "Roll no", password: String = "Password.") {
-        mailRepository.setCredential(Credentials.basic(roll, password))
-        flow { emit(mailRepository.login()) }
-        debugLog("Ho gaya login, aage badho")
-    }
+    private fun login(roll: String = "Roll no", password: String = "Password.") =
+        lifecycleScope.launch {
+            val result = viewModel.login(roll, password)
+            when (result.status) {
+                Status.SUCCESS ->
+                    viewModel.saveLogIn()
+                Status.ERROR -> {
+                    //TODO Show Error
+                }
+                Status.LOADING -> {
+                    //TODO Show Progress Bar
+                }
+            }
+        }
 
-    fun getParsedMails(conversationId: Int) =
-        flow {
-            emit(mailRepository.getParsedMails(conversationId).first())
-        }.asLiveData().value
+    private fun getMails() = viewModel.getMails(getString(R.string.inbox), 0)
+
+    private fun getParsedMails(conversationId: Int) = viewModel.getParsedMails(conversationId)
+
+    private fun subscribeToObservers() {
+        viewModel.isLoggedIn.observe(this, {
+            it?.let {
+                when (it) {
+                    true -> {
+                    }//Login data exist, naviagate to inbox
+                    false -> {
+                    }//Show Login Dialog
+                }
+            }
+        })
+    }
 
     companion object {
         private const val CHANNEL = "org.dscnitrourkela.elaichi"
