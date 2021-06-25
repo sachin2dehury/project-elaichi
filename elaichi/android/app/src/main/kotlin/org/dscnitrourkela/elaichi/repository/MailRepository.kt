@@ -2,10 +2,6 @@ package org.dscnitrourkela.elaichi.repository
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -32,12 +28,15 @@ class MailRepository(
     private val mailApi: MailApi,
     private val mailDao: MailDao,
     private val parsedMailDao: ParsedMailDao,
-    private val pagerConfig: PagingConfig,
+//    private val pagerConfig: PagingConfig,
 ) {
 
-    @ExperimentalPagingApi
-    fun getSearchMails(request: String) =
-        getPager(SearchMailPagingSource(context, request, mailApi, mailDao))
+    suspend fun getSearchMails(request: String): List<Mail>? {
+        return when (isInternetConnected(context)) {
+            true -> mailApi.searchMails(request).body()?.mails
+            else -> mailDao.searchMails(request).first()
+        }
+    }
 
     suspend fun getParsedMails(conversationId: Int): List<ParsedMail> {
         if (isInternetConnected(context)) {
@@ -113,10 +112,7 @@ class MailRepository(
         basicAuthInterceptor.token = ""
     }
 
-    private fun <T : Any> getPager(pagingSource: PagingSource<Int, T>) =
-        Pager(pagerConfig, 0, { pagingSource }).flow
-
-    fun getBox(request: String) = when (request) {
+    private fun getBox(request: String) = when (request) {
         context.getString(R.string.inbox) -> 2
         context.getString(R.string.trash) -> 3
         context.getString(R.string.junk) -> 4

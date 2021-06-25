@@ -48,9 +48,9 @@ class SyncService : JobService() {
                 ?.let { credential -> basicAuthInterceptor.credential = credential }
             it.extras.getString(applicationContext.getString(R.string.key_token))
                 ?.let { token -> basicAuthInterceptor.token = token }
-            notificationExt.notify("Syncing Mails", "You may have some new mails")
+//            notificationExt.notify("Syncing Mails", "You may have some new mails")
             getMails().invokeOnCompletion { t ->
-                notificationExt.cancelNotify()
+//                notificationExt.cancelNotify()
                 if (t == null) {
                     jobFinished(jobParameters, false)
                 } else {
@@ -77,11 +77,11 @@ class SyncService : JobService() {
         list.forEach { mail ->
             if (mail.flag?.contains('u') == true) {
                 val sender = mail.addresses?.last()
-                notificationExt.notify(
-                    "New Mail From ${sender?.firstName}",
-                    mail.subject ?: "",
-                    mail.id
-                )
+//                notificationExt.notify(
+//                    "New Mail From ${sender?.firstName}",
+//                    mail.subject ?: "",
+//                    mail.id
+//                )
             }
         }
     }

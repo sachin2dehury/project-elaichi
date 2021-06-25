@@ -1,52 +1,39 @@
 package org.dscnitrourkela.elaichi.ui.activities
 
-import android.os.Bundle
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.ktx.Firebase
-import dagger.hilt.android.AndroidEntryPoint
-import org.dscnitrourkela.elaichi.databinding.ActivityMailBinding
-import org.dscnitrourkela.elaichi.ui.viewmodels.SettingsViewModel
-import org.dscnitrourkela.elaichi.utils.enableDarkTheme
-import org.dscnitrourkela.elaichi.utils.enableSyncService
-import org.dscnitrourkela.elaichi.utils.hideKeyBoard
 
-
-@AndroidEntryPoint
-class MailActivity : AppCompatActivity() {
-
-    private var _binding: ActivityMailBinding? = null
-    private val binding: ActivityMailBinding get() = _binding!!
-
-//    private lateinit var toggle: ActionBarDrawerToggle
-//    private lateinit var navController: NavController
-
-    private val viewModel: SettingsViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        _binding = ActivityMailBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-//        drawerOptionMenu()
-
-//        inAppReview()
+//@AndroidEntryPoint
+//class MailActivity : AppCompatActivity() {
 //
-//        inAppUpdate()
+//    private var _binding: ActivityMailBinding? = null
+//    private val binding: ActivityMailBinding get() = _binding!!
+//
+////    private lateinit var toggle: ActionBarDrawerToggle
+////    private lateinit var navController: NavController
+//
+//    private val viewModel: SettingsViewModel by viewModels()
+//
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//
+//        _binding = ActivityMailBinding.inflate(layoutInflater)
+//        setContentView(binding.root)
+//
+////        drawerOptionMenu()
+//
+////        inAppReview()
+////
+////        inAppUpdate()
+//
+//        subscribeToObservers()
+//
+////        loadAds()
+//
+//    }
 
-        subscribeToObservers()
-
-//        loadAds()
-
-    }
-
-    private fun enableFirebase(shouldEnable: Boolean) {
-        Firebase.analytics.setAnalyticsCollectionEnabled(shouldEnable)
-        Firebase.crashlytics.setCrashlyticsCollectionEnabled(shouldEnable)
-    }
+//    private fun enableFirebase(shouldEnable: Boolean) {
+//        Firebase.analytics.setAnalyticsCollectionEnabled(shouldEnable)
+//        Firebase.crashlytics.setCrashlyticsCollectionEnabled(shouldEnable)
+//    }
 
 //    private fun drawerOptionMenu() {
 //
@@ -103,13 +90,13 @@ class MailActivity : AppCompatActivity() {
 //        else -> NavGraphDirections.actionToAuthFragment()
 //    }
 
-    private fun subscribeToObservers() {
-        viewModel.darkThemeState.observe(this, { result -> result?.let { enableDarkTheme(it) } })
-        viewModel.analyticsState.observe(this, { result -> result?.let { enableFirebase(it) } })
-        viewModel.syncState.observe(this, { result ->
-            result?.let { enableSyncService(it, viewModel.getBundle(this)) }
-        })
-    }
+//    private fun subscribeToObservers() {
+//        viewModel.darkThemeState.observe(this, { result -> result?.let { enableDarkTheme(it) } })
+//        viewModel.analyticsState.observe(this, { result -> result?.let { enableFirebase(it) } })
+//        viewModel.syncState.observe(this, { result ->
+//            result?.let { enableSyncService(it, viewModel.getBundle(this)) }
+//        })
+//    }
 
 //    private fun enableDrawer(shouldEnable: Boolean) {
 //        binding.drawerLayout.setDrawerLockMode(if (shouldEnable) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
@@ -128,17 +115,17 @@ class MailActivity : AppCompatActivity() {
 //        return super.onOptionsItemSelected(item)
 //    }
 
-    override fun onBackPressed() {
-        if (binding.root.hideKeyBoard()) {
-            return
-        }
-        super.onBackPressed()
-    }
+//    override fun onBackPressed() {
+//        if (binding.root.hideKeyBoard()) {
+//            return
+//        }
+//        super.onBackPressed()
+//    }
 
 //    override fun onSupportNavigateUp() = navController.navigateUp() || super.onSupportNavigateUp()
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
-}
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        _binding = null
+//    }
+//}

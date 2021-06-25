@@ -18,7 +18,7 @@ class CloudMessagingService : FirebaseMessagingService() {
 
         message.notification.let { notification ->
             notification?.let {
-                notificationExt.notify("${it.title}", "${it.body}")
+//                notificationExt.notify("${it.title}", "${it.body}")
             }
         }
     }

@@ -1,7 +1,5 @@
 package org.dscnitrourkela.elaichi.ui.activities
 
-import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.activity.viewModels
 import androidx.annotation.NonNull
 import androidx.lifecycle.lifecycleScope
@@ -11,6 +9,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
 import kotlinx.coroutines.launch
+import org.dscnitrourkela.elaichi.R
 import org.dscnitrourkela.elaichi.others.Status
 import org.dscnitrourkela.elaichi.others.debugLog
 import org.dscnitrourkela.elaichi.ui.viewmodels.MainViewModel
@@ -20,32 +19,16 @@ class MainActivity : FlutterFragmentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-//        subscribeToObservers()
-    }
-
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
             .setMethodCallHandler { call, result ->
                 if (call.method.equals("startOwlMail", ignoreCase = true)) {
-                    login().invokeOnCompletion {
-                        debugLog("Mails")
-                        getMails().invokeOnCompletion {
-                            debugLog(viewModel.mails)
-                        }
-                    }
+                    login("117cr0160", "Sachin@2017")
                 }
                 if (call.method.equals("getMails", ignoreCase = true)) {
-                    debugLog("clicked")
-                    getMails().invokeOnCompletion {
-                        debugLog(viewModel.mails)
-                    }
+
                     result.success(viewModel.mails.size)
-                }
-                if (call.method.equals("getParsedMails", ignoreCase = true)) {
-                    getParsedMails(0)
                 }
             }
     }
@@ -57,8 +40,8 @@ class MainActivity : FlutterFragmentActivity() {
             debugLog(result)
             when (result.status) {
                 Status.SUCCESS -> {
-//                    viewModel.saveLogIn()
                     debugLog("Logged In")
+                    getMails()
                 }
                 Status.ERROR -> {
                     //TODO Show Error
@@ -69,22 +52,14 @@ class MainActivity : FlutterFragmentActivity() {
             }
         }
 
-    private fun getMails() = viewModel.getMails("inbox", 0)
+    private fun getMails() = viewModel.getMails(getString(R.string.inbox), 0).invokeOnCompletion {
+        debugLog(viewModel.mails)
+    }
 
-    private fun getParsedMails(conversationId: Int) = viewModel.getParsedMails(conversationId)
-
-//    private fun subscribeToObservers() {
-//        viewModel.isLoggedIn.observe(this, {
-//            it?.let {
-//                when (it) {
-//                    true -> {
-//                    }//Login data exist, naviagate to inbox
-//                    false -> {
-//                    }//Show Login Dialog
-//                }
-//            }
-//        })
-//    }
+    private fun getParsedMails(conversationId: Int) =
+        viewModel.getParsedMails(conversationId).invokeOnCompletion {
+            debugLog(viewModel.parsedMails)
+        }
 
     companion object {
         private const val CHANNEL = "org.dscnitrourkela.elaichi"

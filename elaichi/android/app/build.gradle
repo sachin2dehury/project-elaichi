@@ -3,7 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
-    id 'androidx.navigation.safeargs.kotlin'
+//    id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
 }
@@ -34,20 +34,20 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 def keyStoreProperties = new Properties()
 def keyStorePropertiesFile = rootProject.file('key.properties')
-if(keyStorePropertiesFile.exists()){
+if (keyStorePropertiesFile.exists()) {
     keyStoreProperties.load(new FileInputStream(keyStorePropertiesFile))
 }
 
 def dartEnvironmentVariables = [
-    ENV: null
+        ENV: null
 ];
-if(project.hasProperty('dart-defines')) {
+if (project.hasProperty('dart-defines')) {
     dartEnvironmentVariables = dartEnvironmentVariables + project.property('dart-defines')
-        .split(',')
-        .collectEntries { entry ->
-            def pair = URLDecoder.decode(entry).split('=')
-            [(pair.first()): pair.last()]
-        }
+            .split(',')
+            .collectEntries { entry ->
+                def pair = URLDecoder.decode(entry).split('=')
+                [(pair.first()): pair.last()]
+            }
 }
 
 android {
@@ -79,7 +79,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs{
+    signingConfigs {
         release {
             keyAlias keyStoreProperties['keyAlias']
             keyPassword keyStoreProperties['keyPassword']
@@ -90,9 +90,9 @@ android {
 
     buildTypes {
         release {
-            if(dartEnvironmentVariables.ENV == null){
+            if (dartEnvironmentVariables.ENV == null) {
                 signingConfig signingConfigs.debug
-            } else{
+            } else {
                 signingConfig signingConfigs.release
             }
         }
@@ -140,23 +140,23 @@ dependencies {
     // Architectural Components
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
 
-    // Lifecycle
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
+//    // Lifecycle
+//    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+//    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+//    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
+//    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
 
     // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-native-mt'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0-native-mt'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0'
 
     // Coroutine Lifecycle Scopes
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
 
-    // Navigation Component
-    implementation "androidx.navigation:navigation-fragment-ktx:2.3.5"
-    implementation "androidx.navigation:navigation-ui-ktx:2.3.5"
+//    // Navigation Component
+//    implementation "androidx.navigation:navigation-fragment-ktx:2.3.5"
+//    implementation "androidx.navigation:navigation-ui-ktx:2.3.5"
 
     //OkHttp
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
@@ -171,19 +171,18 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.2.3"
 
     //Dagger - Hilt
-    implementation 'com.google.dagger:hilt-android:2.36'
-    kapt 'com.google.dagger:hilt-android-compiler:2.36'
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
+    implementation 'com.google.dagger:hilt-android:2.37'
+    annotationProcessor 'com.google.dagger:hilt-compiler:2.37'
 
     // Room
-    implementation "androidx.room:room-runtime:2.4.0-alpha02"
-    kapt "androidx.room:room-compiler:2.4.0-alpha02"
+    implementation "androidx.room:room-runtime:2.3.0"
+    kapt "androidx.room:room-compiler:2.3.0"
 
     // Kotlin Extensions and Coroutines support for Room
-    implementation "androidx.room:room-ktx:2.4.0-alpha02"
+    implementation "androidx.room:room-ktx:2.3.0"
 
-    // Preferences DataStore
-    implementation "androidx.datastore:datastore-preferences:1.0.0-beta01"
+//    // Preferences DataStore
+//    implementation "androidx.datastore:datastore-preferences:1.0.0-beta02"
 
     //JSoup
     implementation 'org.jsoup:jsoup:1.13.1'
@@ -198,16 +197,16 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     //Ads
-    implementation 'com.google.android.gms:play-services-ads:20.1.0'
+//    implementation 'com.google.android.gms:play-services-ads:20.2.0'
 
-    //WebKit
-    implementation 'androidx.webkit:webkit:1.4.0'
-
-    //Preference
-    implementation "androidx.preference:preference-ktx:1.1.1"
-
-    //Paging Library
-    implementation 'androidx.paging:paging-runtime-ktx:3.0.0'
+//    //WebKit
+//    implementation 'androidx.webkit:webkit:1.4.0'
+//
+//    //Preference
+//    implementation "androidx.preference:preference-ktx:1.1.1"
+//
+//    //Paging Library
+//    implementation 'androidx.paging:paging-runtime-ktx:3.0.0'
 
     //Multidex Support
     implementation 'androidx.multidex:multidex:2.0.1'

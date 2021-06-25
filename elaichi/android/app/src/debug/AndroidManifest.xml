@@ -23,10 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="org.dscnitrourkela.elaichi.ui.activities.MailActivity"
-            android:theme="@style/Theme.OwlMail">
-        </activity>
+        <!--        <activity-->
+        <!--            android:name="org.dscnitrourkela.elaichi.ui.activities.MailActivity"-->
+        <!--            android:theme="@style/Theme.OwlMail">-->
+        <!--        </activity>-->
 
         <service
             android:name="org.dscnitrourkela.elaichi.services.CloudMessagingService"

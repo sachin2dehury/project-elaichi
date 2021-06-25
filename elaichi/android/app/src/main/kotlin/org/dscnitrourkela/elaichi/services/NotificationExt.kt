@@ -1,17 +1,14 @@
 package org.dscnitrourkela.elaichi.services
 
-import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import org.dscnitrourkela.elaichi.R
-import org.dscnitrourkela.elaichi.ui.activities.MailActivity
 
 class NotificationExt(private val context: Context) {
 
@@ -42,11 +39,11 @@ class NotificationExt(private val context: Context) {
             setContentIntent(pendingIntent)
         }.build()
 
-    fun notify(
-        title: String, subject: String, id: Int = 0,
-        @SuppressLint("UnspecifiedImmutableFlag") pendingIntent: PendingIntent =
-            PendingIntent.getActivity(context, 1000, Intent(context, MailActivity::class.java), 0)
-    ) = notificationManager.notify(id, notificationBuilder(title, subject, pendingIntent))
-
-    fun cancelNotify(id: Int = 0) = notificationManager.cancel(id)
+//    fun notify(
+//        title: String, subject: String, id: Int = 0,
+//        @SuppressLint("UnspecifiedImmutableFlag") pendingIntent: PendingIntent =
+//            PendingIntent.getActivity(context, 1000, Intent(context, MailActivity::class.java), 0)
+//    ) = notificationManager.notify(id, notificationBuilder(title, subject, pendingIntent))
+//
+//    fun cancelNotify(id: Int = 0) = notificationManager.cancel(id)
 }
